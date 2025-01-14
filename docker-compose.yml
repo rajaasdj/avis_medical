@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: avis_app:dev
+    restart: unless-stopped
+    container_name: APP_AVIS
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./avis_medical:/avis_medical
+      - ./media:/app/media
+    command: >
+      sh -c " python manage.py makemigrations &&
+              python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000"
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.88.0/24

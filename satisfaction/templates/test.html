@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avis</title>
+    <style>
+        /* ... (styles existants) ... */
+        .emoji-label {
+            display: block; /* Alignement vertical */
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .emoji-label:hover {
+            transform: scale(1.2);
+        }
+
+        .emoji {
+            font-size: 80px; /* Réduire la taille des emojis */
+            display: block;
+            margin: 0 auto; /* Centrer les emojis */
+        }
+
+        #scan-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #scan-container input {
+            width: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        #scan-container button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="icon" type="image/png" href="{% static 'images/ehp.png' %}">
+</head>
+<body>
+
+    <div class="background"></div>
+    <div class="header">
+        <img src="{% static 'images/ehp.png' %}" alt="Logo">
+        <h1>L’Etablissement Hospitalier Privé HASNAOUI </h1>
+    </div>
+    
+    <div class="container">
+        <form method="POST" action="{% url 'avis_form' %}">
+            {% csrf_token %}
+            <div id="form-container" style="display: block;">
+                <h1>Que pensez-vous de nos services ?</h1>
+                <div id="emoji-selection">
+                    <label class="emoji-label">
+                        <span class="emoji">
+                            <a href="javascript:void(0);" onclick="showForm('😊')" style="text-decoration:none;"> 😊  </a>
+                             
+                        </span>
+                    </label>
+                    <label class="emoji-label">
+                        <span class="emoji">
+                            <a href="javascript:void(0);" onclick="showForm('😐')" style="text-decoration:none;"> 😐 </a>
+                        </span>
+                    </label>
+                    <label class="emoji-label">
+                        <span class="emoji">
+                            <a href="javascript:void(0);" onclick="showForm('😞')" style="text-decoration:none;"> 😞 </a>
+                        </span>
+                    </label>
+                </div>
+
+                <div id="additional-fields" style="display: none;">
+                    {{ form.emoji }}
+                    <br>
+                    <div class="form-group">
+                        <label for="id_feedback">Votre commentaire :</label>
+                        {{ form.feedback }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_code">Code de visite (trouvable sur votre reçu) :</label>
+                        <input type="text" name="code" id="id_code" required>
+                    </div>
+                    <button type="button" onclick="showScan()" id="scan-button" style="display: none; margin: auto; background-color: #00bde7; margin-top: 15px">Scanner</button>
+                </div>
+            </div>
+
+            <div id="scan-container">
+                <h2>Scanner votre code de visite</h2>
+                <input type="text" placeholder="Collez votre code ici">
+                <button type="submit">Valider</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        const showForm = (selectedValue) => {
+            const emojiField = document.getElementById("id_emoji");
+            emojiField.value = selectedValue;
+            document.getElementById("additional-fields").style.display = "block";
+            document.getElementById("scan-button").style.display = "block";
+            document.getElementById("emoji-selection").style.display = "none";
+        }
+        const showScan = () => {
+            document.getElementById("form-container").style.display = "none";
+            document.getElementById("scan-container").style.display = "flex";
+        }
+    </script>
+</body>
+</html>
+
+
+<script>
+   // const showForm = (selectedValue) => {
+        const emojiField = document.getElementById("id_emoji");
+        emojiField.value = selectedValue;
+        document.getElementById("additional-fields").style.display = "block";
+       // document.getElementById("scan-button").style.display = "block";
+        document.getElementById("emoji-selection").style.display = "none";
+   // }
+
+    const showScanField = () => {
+   
+    document.getElementById("form-container").style.display="none";
+    document.getElementById("scan-field").style.display = "block"; // Afficher le message et le champ de scan
+    document.getElementById("scan-message").innerText = "Scannez votre ticket  :";
+    document.getElementById("id_code").focus();  // Met le focus automatiquement sur le champ de scan
+    // Sélectionner automatiquement le champ de scan
+    setTimeout(() => {
+    document.getElementById("id_code").focus();
+                     }, 200);  // Légère temporisation pour garantir que l'élément est visible avant de donner le focus
+
+    
+    }
+   
+
+    let scanTimer;
+    const handleScan = () => {
+    clearTimeout(scanTimer);
+    scanTimer = setTimeout(() => {
+    document.querySelector('form').submit(); // Soumet le formulaire automatiquement
+                                 }, 500);  // Déclenche la soumission 500 ms après la dernière entrée
+     };
+     //ef can_feedback(code):
+    //allowed_prefixes = ['CQà', "é'&"]
+    //if code[:3] not in allowed_prefixes:
+      //  return False, 'Code invalide ⚠️'
+    //elif Visite.objects.filter(code=code).exists():
+      //  return False, 'Code déjà scanné ⚠️'
+    //return True, 'Code valide'
+
+</script>
+

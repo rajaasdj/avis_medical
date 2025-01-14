@@ -1,0 +1,7 @@
+.codegpt
+.venv
+satisfaction/__pycache__/
+avis_medical/__pycache__/
+satisfaction/migration/*
+!satisfaction/migration/__init__.py
+*.pyc
