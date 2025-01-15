@@ -26,7 +26,7 @@ def page_emojis(request):
             avis = form.save()
             avis.visite = visite
             avis.save()
-            return render(request, 'success.html', {'message': message[1][7:]})
+            return render(request, 'success.html', {'message': message[1]})
     return render(request, 'avis_form.html', {'form': form })
 
 @csrf_protect
